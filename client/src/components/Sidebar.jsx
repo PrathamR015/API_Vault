@@ -1,20 +1,35 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  ChevronDown, Tag, KeyRound, Globe, ListFilter, 
+  Code2, MapPin, Coins, TrendingUp, Truck, Gamepad2, Shield, Brain 
+} from 'lucide-react';
 import useStore from '../store/useStore';
 
-const topCategories = ['All', 'Database', 'Financial', 'Jobs', 'Cybersecurity', 'Medical', 'Tools', 'Media', 'Science'];
+const topCategories = ['All', 'Development', 'Geocoding', 'Cryptocurrency', 'Finance', 'Transportation', 'Games & Comics', 'Security', 'Machine Learning'];
 const otherCategories = [
-  'Education', 'Data', 'Mapping', 'Text Analysis', 'eCommerce', 'Communication', 'Search',
-  'Payments', 'Transportation', 'News, Media', 'Video, Images', 'Energy', 'Movies',
-  'Advertising', 'Artificial Intelligence/Machine Learning', 'Events', 'Email', 'Travel',
-  'Gaming', 'Health and Fitness', 'Sports', 'Location', 'SMS', 'Devices', 'Logistics',
-  'Social', 'Business', 'Commerce', 'Business Software', 'Translation', 'Food', 'Weather',
-  'Monitoring', 'Finance', 'Visual Recognition', 'Music', 'Cryptography', 'Entertainment',
-  'Storage', 'Reward', 'Other'
+  'Documents & Productivity', 'Weather', 'Government', 'Sports & Fitness', 'Photography', 'Anti-Malware',
+  'News', 'Food & Drink', 'Open Data', 'Music', 'Jobs', 'Video', 'Email', 'Cloud Storage & File Sharing',
+  'Business', 'Text Analysis', 'Environment', 'URL Shorteners', 'Shopping', 'Currency Exchange', 'Dictionaries',
+  'Art & Design', 'Authentication & Authorization', 'Social', 'Tracking', 'Health', 'Blockchain', 'Animals',
+  'Test Data', 'Continuous Integration', 'Data Validation', 'Calendar', 'Phone', 'Programming', 'Anime',
+  'Science & Math', 'Books', 'Vehicle', 'Personality', 'Events', 'Entertainment', 'Patent'
 ].sort();
 
-const authTypes = ['All', 'OAuth', 'API Key', 'No Auth'];
+const authTypes = ['All', 'API Key'];
+
+const categoryIcons = {
+  All: Globe,
+  Development: Code2,
+  Geocoding: MapPin,
+  Cryptocurrency: Coins,
+  Finance: TrendingUp,
+  Transportation: Truck,
+  'Games & Comics': Gamepad2,
+  Security: Shield,
+  'Machine Learning': Brain
+};
 
 export default function Sidebar() {
   const { isSidebarOpen } = useStore();
@@ -31,7 +46,15 @@ export default function Sidebar() {
     } else {
       newParams.set(key, value);
     }
+    newParams.delete('ids');
+    newParams.delete('curated');
+    newParams.delete('curatedPrompt');
     setSearchParams(newParams);
+    
+    // Smooth scroll to the APIs section below the key-value parameters
+    setTimeout(() => {
+      document.getElementById('api-grid-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 120);
   };
 
   return (
@@ -42,24 +65,39 @@ export default function Sidebar() {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -300, opacity: 0 }}
           transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-          className="w-64 fixed left-0 top-16 bottom-0 overflow-y-auto bg-white/80 backdrop-blur-xl border-r border-slate-200 p-4 z-40 hidden md:flex flex-col"
+          className="w-64 fixed left-0 top-16 bottom-0 overflow-y-auto bg-zinc-950/85 backdrop-blur-xl border-r border-zinc-900/60 p-4 z-40 hidden md:flex flex-col shadow-2xl shadow-black/50"
         >
+          {/* Categories Title */}
           <div className="flex-grow">
-            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 px-3">Categories</h3>
+            <div className="flex items-center gap-2 mb-4 px-3">
+              <ListFilter className="w-3.5 h-3.5 text-blue-500" />
+              <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Categories</h3>
+            </div>
+            
             <div className="space-y-1">
-              {topCategories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => updateFilter('category', cat)}
-                  className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                    currentCategory === cat
-                      ? 'text-blue-700 bg-blue-50'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+              {topCategories.map((cat) => {
+                const IconComponent = categoryIcons[cat] || Tag;
+                const isActive = currentCategory === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => updateFilter('category', cat)}
+                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold border transition-all duration-200 active:scale-98 group ${
+                      isActive
+                        ? 'text-white bg-zinc-900 border-zinc-800 shadow-inner'
+                        : 'text-zinc-400 border-transparent hover:bg-zinc-900/50 hover:text-zinc-200'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2.5 truncate">
+                      <IconComponent className={`w-4 h-4 ${isActive ? 'text-blue-400' : 'text-zinc-500 group-hover:text-zinc-300'}`} />
+                      <span className="truncate">{cat}</span>
+                    </span>
+                    {isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                    )}
+                  </button>
+                );
+              })}
               
               <AnimatePresence>
                 {showAllCategories && (
@@ -67,62 +105,47 @@ export default function Sidebar() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="overflow-hidden"
+                    className="overflow-hidden space-y-1 mt-1"
                   >
-                    {otherCategories.map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => updateFilter('category', cat)}
-                        className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                          currentCategory === cat
-                            ? 'text-indigo-400 bg-indigo-500/10'
-                            : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-200'
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
+                    {otherCategories.map((cat) => {
+                      const isActive = currentCategory === cat;
+                      return (
+                        <button
+                          key={cat}
+                          onClick={() => updateFilter('category', cat)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold border transition-all duration-200 group ${
+                            isActive
+                              ? 'text-white bg-zinc-900 border-zinc-850 shadow-inner'
+                              : 'text-zinc-400 border-transparent hover:bg-zinc-900/50 hover:text-zinc-200'
+                          }`}
+                        >
+                          <span className="flex items-center gap-2.5 truncate pl-1">
+                            <Tag className={`w-3.5 h-3.5 ${isActive ? 'text-blue-400' : 'text-zinc-655 text-zinc-600'}`} />
+                            <span className="truncate">{cat}</span>
+                          </span>
+                          {isActive && (
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </motion.div>
                 )}
               </AnimatePresence>
               
               <button
                 onClick={() => setShowAllCategories(!showAllCategories)}
-                className="w-full flex items-center space-x-2 px-3 py-3 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-3 py-3 mt-2 rounded-xl text-xs font-bold text-zinc-500 hover:text-blue-400 hover:bg-zinc-900/30 transition-colors border border-transparent hover:border-zinc-900"
               >
-                <svg 
-                  className={`w-4 h-4 transition-transform duration-200 ${showAllCategories ? 'rotate-180' : ''}`} 
-                  fill="none" 
-                  viewBox="0 0 24 24" 
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-                <span>{showAllCategories ? 'View Less' : 'View All Categories'}</span>
+                <ChevronDown 
+                  className={`w-4 h-4 transition-transform duration-300 ${showAllCategories ? 'rotate-180 text-blue-400' : 'text-zinc-500'}`} 
+                />
+                <span>{showAllCategories ? 'Show Less' : 'Browse All Categories'}</span>
               </button>
             </div>
           </div>
 
-          <div className="border-t border-slate-200 my-4"></div>
 
-          <div>
-            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4 px-3">Auth Type</h3>
-            <div className="space-y-1">
-              {authTypes.map((auth) => (
-                <button
-                  key={auth}
-                  onClick={() => updateFilter('authType', auth)}
-                  className={`w-full text-left px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                    currentAuth === auth
-                      ? 'text-blue-700 bg-blue-50'
-                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                  }`}
-                >
-                  {auth}
-                </button>
-              ))}
-            </div>
-          </div>
         </motion.aside>
       )}
     </AnimatePresence>

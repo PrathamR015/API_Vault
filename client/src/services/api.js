@@ -16,3 +16,8 @@ export const checkAuthStatus = async () => {
   const response = await api.get('/auth/me');
   return response.data;
 };
+
+export const curateAPIs = async (prompt, history = []) => {
+  const response = await api.post('/curate', { prompt, history });
+  return response.data;
+};

@@ -17,6 +17,8 @@ const apiSchema = new mongoose.Schema({
     type: String, 
     default: 'FREE'
   },
+  https: { type: String, default: 'Unknown' },
+  cors: { type: String, default: 'Unknown' },
   lastChecked: { type: Date, default: Date.now },
   websiteUrl: { type: String },
   documentationUrl: { type: String },

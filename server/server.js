@@ -8,6 +8,7 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/apis');
+const curateRoutes = require('./routes/curate');
 const startHealthCheckJob = require('./jobs/healthCheck');
 const User = require('./models/User');
 
@@ -70,6 +71,7 @@ passport.deserializeUser(async (id, done) => {
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/apis', apiRoutes);
+app.use('/api/curate', curateRoutes);
 
 // Start Background Jobs
 startHealthCheckJob();

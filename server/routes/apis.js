@@ -1,12 +1,13 @@
 const express = require('express');
 const API = require('../models/API');
+const { ensureAuthenticated } = require('../middleware/auth');
 const router = express.Router();
 
 // @desc    Get all APIs (with filtering and pagination)
 // @route   GET /api/apis
-router.get('/', async (req, res) => {
+router.get('/', ensureAuthenticated, async (req, res) => {
   try {
-    const { category, authType, search, page = 1, limit = 24 } = req.query;
+    const { category, authType, search, ids, page = 1, limit = 24 } = req.query;
     
     // Build query object
     let query = {};
@@ -14,6 +15,14 @@ router.get('/', async (req, res) => {
     if (authType) query.authType = authType;
     if (search) {
       query.$text = { $search: search };
+    }
+    if (ids) {
+      const mongoose = require('mongoose');
+      const objectIdArray = ids.split(',')
+        .map(id => id.trim())
+        .filter(id => mongoose.Types.ObjectId.isValid(id))
+        .map(id => new mongoose.Types.ObjectId(id));
+      query._id = { $in: objectIdArray };
     }
 
     const pageNum = parseInt(page);
@@ -39,7 +48,7 @@ router.get('/', async (req, res) => {
 
 // @desc    Add a new API
 // @route   POST /api/apis
-router.post('/', async (req, res) => {
+router.post('/', ensureAuthenticated, async (req, res) => {
   try {
     // In a real app, verify req.user exists (auth middleware)
     const newAPI = new API({
@@ -56,7 +65,7 @@ router.post('/', async (req, res) => {
 
 // @desc    Upvote an API
 // @route   PUT /api/apis/:id/upvote
-router.put('/:id/upvote', async (req, res) => {
+router.put('/:id/upvote', ensureAuthenticated, async (req, res) => {
   try {
     const api = await API.findById(req.params.id);
     if (!api) return res.status(404).json({ message: 'API not found' });
