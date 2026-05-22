@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # API Vault — Premium Developer API Discovery & Curation Portal
 
 API Vault was built on a simple yet powerful premise: to create a centralized, frictionless hub where developers can instantly discover free and open-source public APIs. No more wasting hours manually searching through fragmented directories or undocumented sites—API Vault aggregates production-ready resources all in one premium ecosystem.
@@ -118,3 +119,6 @@ cd client
 npm run build
 ```
 The client package compiles cleanly in **under 6 seconds** with **0 build warnings, 0 syntax exceptions, and 0 bundle errors**. The production-ready files are populated inside `client/dist`.
+=======
+## API Vault
+>>>>>>> f85724453180b0ce5e8e8b4383333966ec071a55
