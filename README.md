@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # API Vault — Premium Developer API Discovery & Curation Portal
 
 API Vault was built on a simple yet powerful premise: to create a centralized, frictionless hub where developers can instantly discover free and open-source public APIs. No more wasting hours manually searching through fragmented directories or undocumented sites—API Vault aggregates production-ready resources all in one premium ecosystem.
