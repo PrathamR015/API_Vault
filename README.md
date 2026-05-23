@@ -28,8 +28,6 @@ Click on any API card to view comprehensive details including CORS status, verif
 ### 📚 Interactive Educational Hub ("Know More")
 A premium learning space dedicated to learning API integration. Watch the centered centerpiece explainer video, walk through the 3-step sequence explaining client-server requests, and understand the core benefits of delegating heavy lifting to mature public APIs.
 
-### 👨‍💻 Developer Spotlight ("About")
-Get to know the architect behind the project! Displays the app vision alongside a modern profile avatar card of the author, complete with direct links to their GitHub portfolio.
 
 ---
 
