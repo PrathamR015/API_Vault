@@ -40,7 +40,7 @@ export default function Login() {
             </h2>
             <p className="text-zinc-400 text-xs md:text-sm leading-relaxed max-w-lg font-medium">
               API Vault is a curated index of open-source public APIs requiring API Key authentication.
-              In addition to discovery, our new **API Architect Studio** empowers developers to design custom endpoint schemas using REST, GraphQL, or gRPC.
+              In addition to discovery, our API Architect Studio empowers developers to design custom endpoint schemas using REST, GraphQL, or gRPC.
             </p>
           </div>
 

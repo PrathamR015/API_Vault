@@ -32,7 +32,7 @@ const categoryIcons = {
 };
 
 export default function Sidebar() {
-  const { isSidebarOpen } = useStore();
+  const { isSidebarOpen, toggleSidebar } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showAllCategories, setShowAllCategories] = useState(false);
 
@@ -51,6 +51,10 @@ export default function Sidebar() {
     newParams.delete('curatedPrompt');
     setSearchParams(newParams);
     
+    if (window.innerWidth < 768) {
+      toggleSidebar();
+    }
+    
     // Smooth scroll to the APIs section below the key-value parameters
     setTimeout(() => {
       document.getElementById('api-grid-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -60,13 +64,20 @@ export default function Sidebar() {
   return (
     <AnimatePresence>
       {isSidebarOpen && (
-        <motion.aside
-          initial={{ x: -300, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: -300, opacity: 0 }}
-          transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-          className="w-64 fixed left-0 top-16 bottom-0 overflow-y-auto bg-zinc-950/85 backdrop-blur-xl border-r border-zinc-900/60 p-4 z-40 hidden md:flex flex-col shadow-2xl shadow-black/50"
-        >
+        <>
+          {/* Mobile backdrop overlay */}
+          <div 
+            onClick={toggleSidebar} 
+            className="fixed inset-0 top-16 z-30 bg-black/60 backdrop-blur-sm md:hidden"
+          />
+
+          <motion.aside
+            initial={{ x: -300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -300, opacity: 0 }}
+            transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+            className="w-64 fixed left-0 top-16 bottom-0 overflow-y-auto bg-zinc-950/85 backdrop-blur-xl border-r border-zinc-900/60 p-4 z-40 flex flex-col shadow-2xl shadow-black/50"
+          >
           {/* Categories Title */}
           <div className="flex-grow">
             <div className="flex items-center gap-2 mb-4 px-3">
@@ -144,10 +155,9 @@ export default function Sidebar() {
               </button>
             </div>
           </div>
-
-
         </motion.aside>
-      )}
-    </AnimatePresence>
-  );
+      </>
+    )}
+  </AnimatePresence>
+);
 }
