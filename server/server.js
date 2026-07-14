@@ -20,7 +20,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173', // Vite default port
+  origin: 'https://api-vault-ochre.vercel.app' || 'http://localhost:5173', // Vite default port
   credentials: true
 }));
 app.use(express.json());
@@ -30,6 +30,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecret',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    secure: true,          // 👈 Required for cross-site cookies over HTTPS
+    sameSite: 'none',      // 👈 Allows cookie to transfer from Render to Vercel
+    maxAge: 24 * 60 * 60 * 1000 
+  }
 }));
 
 // Passport Config
