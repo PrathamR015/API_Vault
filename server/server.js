@@ -39,7 +39,10 @@ app.use(passport.session());
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID || 'mock_id',
     clientSecret: process.env.GITHUB_CLIENT_SECRET || 'mock_secret',
-    callbackURL: process.env.CALLBACK_URL || "http://localhost:5000/api/auth/github/callback"
+    callbackURL: process.env.CALLBACK_URL || "http://localhost:5000/api/auth/github/callback",
+    customHeaders: {
+      "User-Agent": "api-vault-production"
+    }
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -77,6 +80,8 @@ app.use('/api/projects', projectRoutes);
 
 // Start Background Jobs
 startHealthCheckJob();
+
+app.set('trust proxy', 1);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
