@@ -1,17 +1,14 @@
 const express = require('express');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const axios = require('axios');
 const API = require('../models/API');
 const { ensureAuthenticated } = require('../middleware/auth');
 const fs = require('fs');
 const path = require('path');
 const router = express.Router();
 
-// Initialize Gemini Client
-const geminiKey = process.env.GEMINI_API_KEY;
-let genAI = null;
-if (geminiKey) {
-  genAI = new GoogleGenerativeAI(geminiKey);
-}
+// Initialize OpenRouter configuration
+const OPENROUTER_KEY = process.env.OPENROUTER_API_KEY;
+const OPENROUTER_MODEL = process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-ultra-550b-a55b:free';
 
 // Helper to log errors to a local file for diagnostics
 const logErrorToFile = (title, err, extra = {}) => {
@@ -23,8 +20,8 @@ const logErrorToFile = (title, err, extra = {}) => {
       errorMessage: err.message,
       errorStack: err.stack,
       extra,
-      envHasKey: !!process.env.GEMINI_API_KEY,
-      envKeyLength: process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.length : 0
+      openRouterModel: OPENROUTER_MODEL,
+      hasApiKey: !!OPENROUTER_KEY
     };
     fs.appendFileSync(logPath, JSON.stringify(logData, null, 2) + '\n---\n');
   } catch (logErr) {
@@ -42,12 +39,12 @@ router.post('/', ensureAuthenticated, async (req, res) => {
       return res.status(400).json({ message: 'Requirement prompt is required.' });
     }
 
-    // If Gemini key is missing, return a graceful development response
-    if (!genAI) {
+    // If OpenRouter key is missing, return a graceful development response
+    if (!OPENROUTER_KEY) {
       return res.status(503).json({
-        message: 'Gemini API key is not configured on the server.',
+        message: 'OpenRouter API key is not configured on the server.',
         isDemo: true,
-        explanation: 'The backend requires a GEMINI_API_KEY environment variable. Here is a mocked curation response for demonstration.',
+        explanation: 'The backend requires an OPENROUTER_API_KEY environment variable. Here is a mocked curation response for demonstration.',
         categories: [
           {
             "name": "Mocked Curation Suite",
@@ -118,16 +115,29 @@ User's Latest Project Specs & Requirements:
 
 Generate the JSON response below:`;
 
-    // 3. Request curation from Gemini
-    const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
-      generationConfig: { 
-        responseMimeType: 'application/json' 
-      }
+    // 3. Request curation from OpenRouter
+    const headers = {
+      'Authorization': `Bearer ${OPENROUTER_KEY}`,
+      'Content-Type': 'application/json',
+      'HTTP-Referer': process.env.CLIENT_URL || 'http://localhost:5173',
+      'X-Title': 'API Vault'
+    };
+
+    const openrouterResponse = await axios.post('https://openrouter.ai/api/v1/chat/completions', {
+      model: OPENROUTER_MODEL,
+      messages: [
+        {
+          role: 'user',
+          content: systemPrompt
+        }
+      ],
+      temperature: 0.1
+    }, {
+      headers,
+      timeout: 120000 // 2 minutes timeout
     });
 
-    const result = await model.generateContent(systemPrompt);
-    const textResponse = result.response.text();
+    const textResponse = openrouterResponse.data.choices[0].message.content;
 
     // Helper to safely clean raw response text before parsing JSON (handles backticks/markdown formatting)
     const cleanJsonResponse = (rawText) => {
@@ -147,7 +157,7 @@ Generate the JSON response below:`;
       const parsedData = JSON.parse(cleanedText);
       res.json(parsedData);
     } catch (parseError) {
-      logErrorToFile('Gemini JSON parsing failure', parseError, { rawResponse: textResponse });
+      logErrorToFile('OpenRouter JSON parsing failure', parseError, { rawResponse: textResponse });
       res.status(500).json({ 
         message: 'Curation response parsing failed.', 
         error: parseError.message,

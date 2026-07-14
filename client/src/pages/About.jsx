@@ -129,7 +129,7 @@ export default function About() {
         {/* Footer info badge */}
         <motion.div variants={itemVariants} className="flex justify-center items-center gap-1.5 text-zinc-650 text-[10px] font-bold uppercase tracking-widest pt-4">
           <Heart className="w-3.5 h-3.5 text-rose-500 animate-pulse fill-rose-500" />
-          <span>Built for Developers Globally</span>
+          <span>Built by Developers for Developers</span>
         </motion.div>
 
       </motion.div>

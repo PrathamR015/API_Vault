@@ -9,6 +9,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/apis');
 const curateRoutes = require('./routes/curate');
+const projectRoutes = require('./routes/projects');
 const startHealthCheckJob = require('./jobs/healthCheck');
 const User = require('./models/User');
 
@@ -19,7 +20,7 @@ connectDB();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite default port
+  origin: process.env.CLIENT_URL || 'http://localhost:5173', // Vite default port
   credentials: true
 }));
 app.use(express.json());
@@ -38,7 +39,7 @@ app.use(passport.session());
 passport.use(new GitHubStrategy({
     clientID: process.env.GITHUB_CLIENT_ID || 'mock_id',
     clientSecret: process.env.GITHUB_CLIENT_SECRET || 'mock_secret',
-    callbackURL: "http://localhost:5000/api/auth/github/callback"
+    callbackURL: process.env.CALLBACK_URL || "http://localhost:5000/api/auth/github/callback"
   },
   async (accessToken, refreshToken, profile, done) => {
     try {
@@ -72,6 +73,7 @@ passport.deserializeUser(async (id, done) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/apis', apiRoutes);
 app.use('/api/curate', curateRoutes);
+app.use('/api/projects', projectRoutes);
 
 // Start Background Jobs
 startHealthCheckJob();

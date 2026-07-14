@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import About from './pages/About';
 import KnowMore from './pages/KnowMore';
+import Projects from './pages/Projects';
+import ProjectStudio from './pages/ProjectStudio';
 import Navbar from './components/Navbar';
 import useStore from './store/useStore';
 import { checkAuthStatus } from './services/api';
@@ -70,6 +72,18 @@ function App() {
             <Route 
               path="/know-more" 
               element={user ? <KnowMore /> : <Navigate to="/login" replace />} 
+            />
+
+            {/* Protected Projects Route */}
+            <Route 
+              path="/projects" 
+              element={user ? <Projects /> : <Navigate to="/login" replace />} 
+            />
+
+            {/* Protected Project Studio Route */}
+            <Route 
+              path="/projects/:id" 
+              element={user ? <ProjectStudio /> : <Navigate to="/login" replace />} 
             />
 
             {/* Catch-all: Redirect back based on auth status */}

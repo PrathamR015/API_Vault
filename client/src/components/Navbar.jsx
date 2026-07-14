@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Github, Menu, Search, LogOut, ChevronDown, Shield, User, Sparkles, BookOpen, Info } from 'lucide-react';
+import { Github, Menu, Search, LogOut, ChevronDown, Shield, User, Sparkles, BookOpen, Info, FolderKanban } from 'lucide-react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import useStore from '../store/useStore';
 import Logo from '../assets/tech.png';
@@ -9,11 +9,13 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/github';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    window.location.href = `${API_URL}/api/auth/github`;
   };
 
   const handleLogout = () => {
-    window.location.href = 'http://localhost:5000/api/auth/logout';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    window.location.href = `${API_URL}/api/auth/logout`;
   };
 
   const [searchParams] = useSearchParams();
@@ -72,6 +74,12 @@ export default function Navbar() {
             Vault
           </button>
           <button 
+            onClick={() => navigate('/projects')} 
+            className={`hover:text-white px-3.5 py-2 rounded-xl transition-all select-none duration-150 active:scale-95 ${location.pathname.startsWith('/projects') ? 'text-blue-400 font-extrabold bg-zinc-900/60 border border-zinc-850 shadow-inner' : 'text-zinc-500 hover:bg-zinc-900/30 border border-transparent'}`}
+          >
+            API Studio
+          </button>
+          <button 
             onClick={() => navigate('/know-more')} 
             className={`hover:text-white px-3.5 py-2 rounded-xl transition-all select-none duration-150 active:scale-95 ${location.pathname === '/know-more' ? 'text-blue-400 font-extrabold bg-zinc-900/60 border border-zinc-850 shadow-inner' : 'text-zinc-500 hover:bg-zinc-900/30 border border-transparent'}`}
           >
@@ -102,20 +110,6 @@ export default function Navbar() {
 
       {/* Identity Controls & Menu */}
       <div className="flex items-center space-x-3">
-        {user && (
-          <button
-            onClick={() => {
-              const params = new URLSearchParams(searchParams);
-              params.set('ai', 'true');
-              navigate(`/?${params.toString()}`);
-            }}
-            className="p-2.5 rounded-xl bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700/80 transition-all text-zinc-400 hover:text-blue-400 active:scale-95 flex items-center justify-center group"
-            title="Ask AI Curator"
-          >
-            <Sparkles className="w-4.5 h-4.5 text-blue-400 group-hover:scale-110 transition-transform animate-pulse" />
-          </button>
-        )}
-
         {user ? (
           <div className="relative">
             <button 
@@ -155,6 +149,17 @@ export default function Navbar() {
                   </div>
 
                   <hr className="border-slate-800/50 my-1" />
+
+                  <button 
+                    onClick={() => {
+                      setDropdownOpen(false);
+                      navigate('/projects');
+                    }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 rounded-xl transition-all text-left"
+                  >
+                    <FolderKanban className="w-3.5 h-3.5 text-blue-400" />
+                    <span>API Studio</span>
+                  </button>
 
                   <button 
                     onClick={() => {

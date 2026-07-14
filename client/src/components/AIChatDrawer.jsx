@@ -59,7 +59,7 @@ export default function AIChatDrawer({ isOpen, onClose }) {
       console.error('Curation request failed:', err);
       setError(
         err.response?.data?.message || 
-        "Failed to curate APIs. Please verify your backend server connection and Gemini API configuration."
+        "Failed to curate APIs. Please verify your backend server connection and OpenRouter configuration."
       );
     } finally {
       setLoading(false);

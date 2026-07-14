@@ -215,7 +215,7 @@ export default function KnowMore() {
               <span>Ready to Architect Your App?</span>
             </h3>
             <p className="text-zinc-400 text-xs max-w-xl font-medium">
-              Explore the database of 630+ public APIs, or launch the Project Assistant to leverage Gemini AI and compose your curated tech stack in seconds.
+              Explore the database of 630+ public APIs, or launch the Project Assistant to leverage Nemotron 3 Ultra and compose your curated tech stack in seconds.
             </p>
           </div>
           

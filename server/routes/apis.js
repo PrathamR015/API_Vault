@@ -11,11 +11,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
     
     // Build query object
     let query = {};
-    if (category) query.category = category;
-    if (authType) query.authType = authType;
-    if (search) {
-      query.$text = { $search: search };
-    }
+    
     if (ids) {
       const mongoose = require('mongoose');
       const objectIdArray = ids.split(',')
@@ -23,6 +19,26 @@ router.get('/', ensureAuthenticated, async (req, res) => {
         .filter(id => mongoose.Types.ObjectId.isValid(id))
         .map(id => new mongoose.Types.ObjectId(id));
       query._id = { $in: objectIdArray };
+      
+      if (search) {
+        query.$or = [
+          { title: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } }
+        ];
+      }
+    } else {
+      if (category && category !== 'All') {
+        query.category = { $regex: `^${category}$`, $options: 'i' };
+      }
+      if (authType && authType !== 'All') {
+        query.authType = { $regex: `^${authType}$`, $options: 'i' };
+      }
+      if (search) {
+        query.$or = [
+          { title: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } }
+        ];
+      }
     }
 
     const pageNum = parseInt(page);

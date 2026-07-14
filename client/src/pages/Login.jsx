@@ -4,7 +4,8 @@ import Logo from '../assets/tech.png';
 
 export default function Login() {
   const handleLogin = () => {
-    window.location.href = 'http://localhost:5000/api/auth/github';
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    window.location.href = `${API_URL}/api/auth/github`;
   };
 
   return (
@@ -118,7 +119,18 @@ export default function Login() {
               <Github className="w-4 h-4 text-white" />
               <span className="text-xs tracking-wide">Sign in with GitHub</span>
             </button>
-            <div className="text-center text-[9px] text-zinc-555 text-zinc-500 leading-relaxed font-medium">
+
+            <button 
+              onClick={() => {
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                window.location.href = `${API_URL}/api/auth/mock-login`;
+              }}
+              className="w-full flex items-center justify-center gap-3 px-5 py-3.5 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 font-bold rounded-xl border border-blue-900/50 hover:border-blue-800 transition-all duration-200 shadow-lg active:scale-[0.98] select-none"
+            >
+              <Sparkles className="w-4 h-4 text-blue-400" />
+              <span className="text-xs tracking-wide">Developer Guest Access</span>
+            </button>
+            <div className="text-center text-[9px] text-zinc-500 leading-relaxed font-medium">
               By signing in, you authorize your GitHub account to upvote and rate API listings. We do not write to or read your private repositories.
             </div>
           </div>
