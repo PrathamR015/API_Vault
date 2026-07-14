@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Key, ShieldCheck, Activity, Sparkles, BookOpen, Lock } from 'lucide-react';
+import { Github, Key, ShieldCheck, Activity, Sparkles, BookOpen, Lock, FolderKanban } from 'lucide-react';
 import Logo from '../assets/tech.png';
 
 export default function Login() {
@@ -39,8 +39,8 @@ export default function Login() {
               </span>
             </h2>
             <p className="text-zinc-400 text-xs md:text-sm leading-relaxed max-w-lg font-medium">
-              API Vault is a meticulously curated index of open-source public APIs requiring API Key authentication.
-              We simplify integrations by validating and verifying connection standards beforehand.
+              API Vault is a curated index of open-source public APIs requiring API Key authentication.
+              In addition to discovery, our new **API Architect Studio** empowers developers to design custom endpoint schemas using REST, GraphQL, or gRPC.
             </p>
           </div>
 
@@ -68,14 +68,14 @@ export default function Login() {
               </p>
             </div>
 
-            {/* 3. Delivered Services */}
+            {/* 3. API Architect Studio */}
             <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-md space-y-2 hover:bg-zinc-900/20 hover:border-zinc-800 transition-all duration-300 hover:-translate-y-0.5 col-span-1 sm:col-span-2">
               <div className="flex items-center gap-2 text-zinc-400">
-                <Activity className="w-4 h-4 text-blue-400" />
-                <h3 className="font-bold text-xs uppercase tracking-wider text-zinc-200">Delivered Services</h3>
+                <FolderKanban className="w-4 h-4 text-blue-400" />
+                <h3 className="font-bold text-xs uppercase tracking-wider text-zinc-200">API Architect Studio</h3>
               </div>
               <p className="text-zinc-400 text-[11px] leading-relaxed font-medium">
-                Automatic hourly Background Health Monitoring job checking status pings, dynamic community rating decks, and detailed structural documentation summaries for developers.
+                Design custom API endpoints using REST, GraphQL, or gRPC. Use Nemotron AI to generate schema templates in bulk, verify request/response payloads with human-in-the-loop review, and download production-ready OpenAPI specifications, GraphQL SDLs, or Protobuf files.
               </p>
             </div>
           </div>

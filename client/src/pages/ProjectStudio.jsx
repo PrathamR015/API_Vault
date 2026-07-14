@@ -47,6 +47,9 @@ export default function ProjectStudio() {
   // Export State
   const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
 
+  // Mobile View State
+  const [mobileView, setMobileView] = useState('list'); // 'list' or 'design'
+
   useEffect(() => {
     loadProjectDetails();
   }, [id]);
@@ -83,6 +86,7 @@ export default function ProjectStudio() {
     setGrpcMethodType(ep.grpcMethodType || 'Unary');
     setRequestPayload(ep.requestPayload || '');
     setResponsePayload(ep.responsePayload || '');
+    setMobileView('design');
   };
 
   const resetFormToNew = (type = 'REST') => {
@@ -97,6 +101,7 @@ export default function ProjectStudio() {
     setGrpcMethodType('Unary');
     setRequestPayload('');
     setResponsePayload('');
+    setMobileView('design');
   };
 
   const handleGenerateWithAI = async (e) => {
@@ -287,23 +292,23 @@ export default function ProjectStudio() {
           </button>
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <h2 className="text-sm font-black text-white">{project.title}</h2>
-              <span className="text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-full font-bold">API Studio</span>
+              <h2 className="text-xs md:text-sm font-black text-white max-w-[100px] sm:max-w-none truncate">{project.title}</h2>
+              <span className="text-[8px] md:text-[9px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1.5 md:px-2 py-0.5 rounded-full font-bold">API Studio</span>
             </div>
-            <p className="text-[10px] text-zinc-500 truncate max-w-md font-medium">{project.description || 'Custom endpoints workspace'}</p>
+            <p className="text-[10px] text-zinc-500 truncate max-w-md font-medium hidden sm:block">{project.description || 'Custom endpoints workspace'}</p>
           </div>
         </div>
 
-        <div className="flex gap-2.5 relative">
+        <div className="flex gap-1.5 md:gap-2.5 relative">
           {/* Export Dropdown */}
           <div className="relative">
             <button
               onClick={() => setExportDropdownOpen(!exportDropdownOpen)}
-              className="px-4 py-2 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 font-bold text-xs rounded-xl flex items-center gap-1.5 border border-zinc-800 hover:border-zinc-750 transition-all active:scale-95 select-none"
+              className="px-3 md:px-4 py-2 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 font-bold text-xs rounded-xl flex items-center gap-1.5 border border-zinc-800 hover:border-zinc-750 transition-all active:scale-95 select-none"
               title="Export Project Specifications"
             >
               <Download className="w-3.5 h-3.5 text-zinc-400" />
-              <span>Export Spec</span>
+              <span className="hidden sm:inline">Export Spec</span>
             </button>
 
             {exportDropdownOpen && (
@@ -341,27 +346,55 @@ export default function ProjectStudio() {
 
           <button
             onClick={() => setAiModalOpen(true)}
-            className="px-4 py-2 bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all active:scale-95 shadow-md shadow-indigo-500/15 border border-indigo-500/30"
+            className="px-3 md:px-4 py-2 bg-gradient-to-r from-violet-600 via-indigo-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all active:scale-95 shadow-md shadow-indigo-500/15 border border-indigo-500/30"
+            title="Generate with AI"
           >
             <Sparkles className="w-3.5 h-3.5 animate-pulse text-indigo-200" />
-            <span>Generate with AI</span>
+            <span className="hidden sm:inline">Generate with AI</span>
           </button>
           
           <button
             onClick={() => resetFormToNew('REST')}
-            className="px-4 py-2 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 font-bold text-xs rounded-xl flex items-center gap-1.5 border border-zinc-800 hover:border-zinc-750 transition-all active:scale-95"
+            className="px-3 md:px-4 py-2 bg-zinc-900 hover:bg-zinc-850 text-zinc-300 font-bold text-xs rounded-xl flex items-center gap-1.5 border border-zinc-800 hover:border-zinc-750 transition-all active:scale-95"
+            title="New Endpoint"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>New Endpoint</span>
+            <span className="hidden sm:inline">New Endpoint</span>
           </button>
         </div>
       </header>
+
+      {/* Mobile Toggle View Tabs */}
+      <div className="flex md:hidden border-b border-zinc-900 bg-zinc-950/40 p-2.5 gap-2 select-none">
+        <button
+          type="button"
+          onClick={() => setMobileView('list')}
+          className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all active:scale-95 ${
+            mobileView === 'list' 
+              ? 'bg-zinc-900 text-white border border-zinc-800 shadow-inner' 
+              : 'text-zinc-550 text-zinc-500 hover:text-zinc-400'
+          }`}
+        >
+          Schema List ({endpoints.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileView('design')}
+          className={`flex-1 py-2 text-center text-xs font-bold rounded-xl transition-all active:scale-95 ${
+            mobileView === 'design' 
+              ? 'bg-zinc-900 text-white border border-zinc-800 shadow-inner' 
+              : 'text-zinc-550 text-zinc-500 hover:text-zinc-400'
+          }`}
+        >
+          {isEditing ? 'Modify Schema' : 'Draft New'}
+        </button>
+      </div>
 
       {/* Main Studio Body (Split Panel Layout) */}
       <div className="flex-grow flex flex-col md:flex-row overflow-hidden">
         
         {/* Left Panel: Endpoints List Sidebar */}
-        <aside className="w-full md:w-80 border-r border-zinc-900/60 bg-zinc-950/40 p-4 flex flex-col justify-between overflow-y-auto space-y-6">
+        <aside className={`w-full md:w-80 border-r border-zinc-900/60 bg-zinc-950/40 p-4 flex flex-col justify-between overflow-y-auto space-y-6 ${mobileView === 'list' ? 'flex' : 'hidden md:flex'}`}>
           <div className="space-y-4">
             <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest px-1">Designed Schema List</h3>
             
@@ -415,7 +448,7 @@ export default function ProjectStudio() {
         </aside>
 
         {/* Right Panel: The Workspace Studio Form */}
-        <main className="flex-1 p-6 overflow-y-auto space-y-6">
+        <main className={`flex-1 p-6 overflow-y-auto space-y-6 ${mobileView === 'design' ? 'block' : 'hidden md:block'}`}>
           <form onSubmit={handleSaveEndpoint} className="max-w-4xl space-y-6">
             
             {/* Header: Design Type Selector (Framer Motion tabs) */}

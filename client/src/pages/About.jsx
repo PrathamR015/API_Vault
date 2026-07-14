@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Github, Code2, Globe, Heart, Shield, Sparkles, Terminal, User, Cpu, Briefcase } from 'lucide-react';
+import { Github, Code2, Globe, Heart, Shield, Sparkles, Terminal, User, Cpu, Briefcase, FolderKanban } from 'lucide-react';
 import PrathamPic from '../assets/Pratham-pic.jpg';
 
 export default function About() {
@@ -69,7 +69,10 @@ export default function About() {
                 A common hurdle for many developers—especially when starting a new project—is not knowing exactly which APIs are required or even exist to power their application's features. API Vault directly addresses this challenge by taking the guesswork out of system design.
               </p>
               <p className="text-zinc-400 text-[12px] leading-relaxed font-medium">
-                Through our interactive AI Project Assistant, developers can simply input their raw project description. The system acts as a personalized architect, analyzing requirements and curating a custom stack of the precise, free, and open-source APIs needed to build their application.
+                Through our interactive AI Project Assistant, developers can simply input their raw project description. The system acts as a personalized architect, curating a custom stack of the precise, free, and open-source APIs needed to build their application.
+              </p>
+              <p className="text-zinc-400 text-[12px] leading-relaxed font-medium">
+                Further expanding this workflow, our newly integrated **API Architect Studio** empowers developers to design custom endpoint schemas using REST, GraphQL, or gRPC. With bulk schema generation powered by Nemotron AI and interactive human-in-the-loop validation, developers can seamlessly design, review, and export ready-to-use specifications like OpenAPI JSON, GraphQL SDL, or Protobuf files instantly.
               </p>
             </div>
 
@@ -79,8 +82,8 @@ export default function About() {
                 <span>Verified Endpoints</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <Terminal className="w-3.5 h-3.5 text-blue-500" />
-                <span>AI Curation Pipeline</span>
+                <FolderKanban className="w-3.5 h-3.5 text-blue-500" />
+                <span>API Architect Studio</span>
               </div>
             </div>
           </motion.div>
