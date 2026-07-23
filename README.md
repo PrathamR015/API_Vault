@@ -23,10 +23,15 @@
 
 ## 🖼️ 3. Screenshots & Preview
 
-| Studio & Endpoint Canvas | AI Bulk Schema Architect |
+| 🛠️ API Architect Studio Workspace | 🤖 AI Bulk Schema Review Modal |
 | :---: | :---: |
-| ![API Studio Workspace](client/src/assets/tech.png) | ![AI Schema Review](client/src/assets/tech.png) |
-| *Interactive REST / GraphQL / gRPC Design Canvas* | *Human-in-the-Loop Bulk Schema Review Modal* |
+| ![API Architect Studio](client/src/assets/UI/api-studio.png) | ![AI Bulk Schema Review](client/src/assets/UI/api-ai-schema.png) |
+| *Interactive REST / GraphQL / gRPC Design Canvas* | *Human-in-the-Loop Bulk Schema Review* |
+
+| 📁 Project Management Dashboard | 🤖 AI Stack Curation |
+| :---: | :---: |
+| ![Project Listing Dashboard](client/src/assets/UI/Project-Listing.png) | ![AI Stack Curation](client/src/assets/UI/AI%20curate%20stack.png) |
+| *Architect Projects Management Deck* | *Smart AI Stack Recommendation Engine* |
 
 ---
 
