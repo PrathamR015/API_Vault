@@ -14,8 +14,8 @@
 
 ## 🌐 2. Live Demo & Deployment
 
-* **Live Web App**: [https://api-vault-client.vercel.app](https://api-vault-client.vercel.app) *(or your deployed Vercel URL)*
-* **Backend API Service**: [https://api-vault-backend.up.railway.app](https://api-vault-backend.up.railway.app)
+* **Live Web App**: [https://api-vault-ochre.vercel.app/]
+* **Backend API Service**: [https://api-vault-j5vj.onrender.com/]
 * **Cloud Database**: MongoDB Atlas Cluster
 * **Access Mode**: Guest Developer Login (No setup required) or GitHub OAuth Authentication
 
