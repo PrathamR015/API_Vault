@@ -350,11 +350,11 @@ const { data, loading } = useQuery({
       {/* Floating Sparkles Button */}
       <button 
         onClick={() => setIsChatOpen(true)}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-zinc-900 border border-zinc-800 text-white rounded-full flex items-center justify-center hover:bg-zinc-850 hover:border-zinc-700 transition-all select-none active:scale-95 shadow-2xl z-50 group shadow-black/60 animate-bounce"
-        style={{ animationDuration: '3s' }}
-        title="Ask AI Curator"
+        className="fixed bottom-6 right-6 px-4 py-3 bg-zinc-900/90 backdrop-blur-md border border-zinc-800 text-white rounded-full flex items-center gap-2.5 hover:bg-zinc-850 hover:border-zinc-700 transition-all select-none active:scale-95 shadow-2xl z-50 group shadow-black/60 font-extrabold text-xs tracking-wide"
+        title="Curate Stack with AI"
       >
-        <Sparkles className="w-5 h-5 text-blue-400 group-hover:scale-110 transition-transform animate-pulse" />
+        <Sparkles className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform animate-pulse" />
+        <span>Curate Stack with AI</span>
       </button>
 
       {/* AI Curation Chat Drawer */}
