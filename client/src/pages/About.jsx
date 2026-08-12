@@ -72,7 +72,7 @@ export default function About() {
                 Through our interactive AI Project Assistant, developers can simply input their raw project description. The system acts as a personalized architect, curating a custom stack of the precise, free, and open-source APIs needed to build their application.
               </p>
               <p className="text-zinc-400 text-[12px] leading-relaxed font-medium">
-                Further expanding this workflow, our newly integrated **API Architect Studio** empowers developers to design custom endpoint schemas using REST, GraphQL, or gRPC. With bulk schema generation powered by Nemotron AI and interactive human-in-the-loop validation, developers can seamlessly design, review, and export ready-to-use specifications like OpenAPI JSON, GraphQL SDL, or Protobuf files instantly.
+                Further expanding this workflow, our newly integrated API Architect Studio empowers developers to design custom endpoint schemas using REST, GraphQL, or gRPC. With bulk schema generation powered by Nemotron AI and interactive human-in-the-loop validation, developers can seamlessly design, review, and export ready-to-use specifications like OpenAPI JSON, GraphQL SDL, or Protobuf files instantly.
               </p>
             </div>
 
