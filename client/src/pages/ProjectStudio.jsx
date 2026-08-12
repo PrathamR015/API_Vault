@@ -3,15 +3,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Plus, Save, Trash2, Edit3, Loader2, Database, Code, 
-  HelpCircle, Settings, ChevronRight, Play, AlertTriangle, Sparkles, Download
+  HelpCircle, Settings, ChevronRight, Play, AlertTriangle, Sparkles, Download, Lock, Github, Info
 } from 'lucide-react';
 import { 
   fetchProjectDetails, createEndpoint, updateEndpoint, deleteEndpoint, updateProject, generateEndpointsBulkWithAI, saveBulkEndpoints, exportProject
 } from '../services/api';
+import useStore from '../store/useStore';
 
 export default function ProjectStudio() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useStore();
+
+  const isGuest = user?.isGuest || user?.username === 'dev-guest';
   
   const [project, setProject] = useState(null);
   const [endpoints, setEndpoints] = useState([]);
@@ -251,6 +255,41 @@ export default function ProjectStudio() {
       alert('Failed to delete endpoint.');
     }
   };
+
+  if (isGuest) {
+    return (
+      <div className="flex-grow w-full min-h-[calc(100vh-4rem)] bg-zinc-950 text-white p-6 md:p-12 flex items-center justify-center relative bg-fine-grid">
+        <div className="max-w-md w-full bg-zinc-950/80 border border-zinc-900 rounded-3xl p-8 backdrop-blur-xl text-center space-y-6 shadow-2xl">
+          <div className="w-16 h-16 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center mx-auto text-amber-400 shadow-inner">
+            <Lock className="w-7 h-7" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-xl font-black text-white tracking-tight">GitHub Sign-in Required</h2>
+            <p className="text-zinc-400 text-xs leading-relaxed font-medium">
+              Guest Mode allows browsing APIs and AI Stack Curation. Sign in with GitHub to unlock <span className="text-white font-bold">API Studio</span>, manage projects, and design endpoint schemas.
+            </p>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <button
+              onClick={handleLogin}
+              className="w-full flex items-center justify-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-[0.98] select-none text-xs"
+            >
+              <Github className="w-4 h-4" />
+              <span>Sign in with GitHub</span>
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="w-full px-5 py-3 bg-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-white font-bold rounded-xl border border-zinc-800 transition-all select-none text-xs"
+            >
+              Return to API Vault
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -741,6 +780,13 @@ export default function ProjectStudio() {
                       onChange={(e) => setAiPrompt(e.target.value)}
                       className="w-full bg-zinc-900/60 hover:bg-zinc-900 focus:bg-zinc-950 border border-zinc-850 focus:border-zinc-700 text-xs rounded-xl px-4 py-3 text-zinc-100 placeholder-zinc-655 outline-none transition-all duration-200 resize-none leading-relaxed font-medium"
                     />
+                  </div>
+
+                  <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-start gap-2.5 text-[11px] text-amber-300 font-medium leading-relaxed">
+                    <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <p>
+                      The app is still under development. If the AI doesn't work, try to write shorter prompts.
+                    </p>
                   </div>
 
                   <div className="flex gap-3 pt-2">

@@ -130,8 +130,12 @@ export default function Login() {
               <Sparkles className="w-4 h-4 text-blue-400" />
               <span className="text-xs tracking-wide">Developer Guest Access</span>
             </button>
+            <div className="text-[10px] text-zinc-400 font-medium text-center bg-zinc-950/60 p-2.5 rounded-xl border border-zinc-850 space-y-1">
+              <p><span className="text-blue-400 font-bold">Guest Mode Notice:</span> Guests can browse APIs & use AI Stack Curator.</p>
+              <p className="text-zinc-500 font-semibold">GitHub sign-in is required to view, create projects, or access API Studio.</p>
+            </div>
             <div className="text-center text-[9px] text-zinc-500 leading-relaxed font-medium">
-              By signing in, you authorize your GitHub account to upvote and rate API listings. We do not write to or read your private repositories.
+              By signing in with GitHub, you authorize session access to manage your API Studio projects. We never read or write to your repositories.
             </div>
           </div>
 

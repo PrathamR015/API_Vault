@@ -2,12 +2,12 @@ const express = require('express');
 const axios = require('axios');
 const Project = require('../models/Project');
 const Endpoint = require('../models/Endpoint');
-const { ensureAuthenticated } = require('../middleware/auth');
+const { ensureNotGuest } = require('../middleware/auth');
 const router = express.Router();
 
 // @desc    Get all projects owned by the logged-in user
 // @route   GET /api/projects
-router.get('/', ensureAuthenticated, async (req, res) => {
+router.get('/', ensureNotGuest, async (req, res) => {
   try {
     const projects = await Project.find({ owner: req.user._id }).sort({ createdAt: -1 });
     
@@ -35,7 +35,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 
 // @desc    Create a new project
 // @route   POST /api/projects
-router.post('/', ensureAuthenticated, async (req, res) => {
+router.post('/', ensureNotGuest, async (req, res) => {
   try {
     const { title, description } = req.body;
     if (!title) {
@@ -61,7 +61,7 @@ router.post('/', ensureAuthenticated, async (req, res) => {
 
 // @desc    Get specific project details and all its endpoints
 // @route   GET /api/projects/:id
-router.get('/:id', ensureAuthenticated, async (req, res) => {
+router.get('/:id', ensureNotGuest, async (req, res) => {
   try {
     const project = await Project.findOne({ _id: req.params.id, owner: req.user._id });
     if (!project) {
@@ -80,7 +80,7 @@ router.get('/:id', ensureAuthenticated, async (req, res) => {
 
 // @desc    Update project metadata
 // @route   PUT /api/projects/:id
-router.put('/:id', ensureAuthenticated, async (req, res) => {
+router.put('/:id', ensureNotGuest, async (req, res) => {
   try {
     const { title, description } = req.body;
     const project = await Project.findOneAndUpdate(
@@ -101,7 +101,7 @@ router.put('/:id', ensureAuthenticated, async (req, res) => {
 
 // @desc    Delete project and its endpoints
 // @route   DELETE /api/projects/:id
-router.delete('/:id', ensureAuthenticated, async (req, res) => {
+router.delete('/:id', ensureNotGuest, async (req, res) => {
   try {
     const project = await Project.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
     if (!project) {
@@ -119,7 +119,7 @@ router.delete('/:id', ensureAuthenticated, async (req, res) => {
 
 // @desc    Create a new endpoint inside a project
 // @route   POST /api/projects/:id/endpoints
-router.post('/:id/endpoints', ensureAuthenticated, async (req, res) => {
+router.post('/:id/endpoints', ensureNotGuest, async (req, res) => {
   try {
     const project = await Project.findOne({ _id: req.params.id, owner: req.user._id });
     if (!project) {
@@ -140,7 +140,7 @@ router.post('/:id/endpoints', ensureAuthenticated, async (req, res) => {
 
 // @desc    Generate multiple endpoints with AI in one go (does not save to DB, returns list for review)
 // @route   POST /api/projects/:id/endpoints/generate-bulk
-router.post('/:id/endpoints/generate-bulk', ensureAuthenticated, async (req, res) => {
+router.post('/:id/endpoints/generate-bulk', ensureNotGuest, async (req, res) => {
   try {
     const { prompt, type } = req.body;
     if (!prompt || !type) {
@@ -268,7 +268,7 @@ Generate the JSON response below:`;
 
 // @desc    Save multiple endpoints to a project in one go
 // @route   POST /api/projects/:id/endpoints/bulk
-router.post('/:id/endpoints/bulk', ensureAuthenticated, async (req, res) => {
+router.post('/:id/endpoints/bulk', ensureNotGuest, async (req, res) => {
   try {
     const { endpoints } = req.body;
     if (!endpoints || !Array.isArray(endpoints)) {
@@ -311,7 +311,7 @@ router.post('/:id/endpoints/bulk', ensureAuthenticated, async (req, res) => {
 
 // @desc    Update designed endpoint details
 // @route   PUT /api/endpoints/:id
-router.put('/endpoints/:id', ensureAuthenticated, async (req, res) => {
+router.put('/endpoints/:id', ensureNotGuest, async (req, res) => {
   try {
     // Verify project ownership before editing endpoint
     const endpoint = await Endpoint.findById(req.params.id);
@@ -338,7 +338,7 @@ router.put('/endpoints/:id', ensureAuthenticated, async (req, res) => {
 
 // @desc    Delete designed endpoint
 // @route   DELETE /api/endpoints/:id
-router.delete('/endpoints/:id', ensureAuthenticated, async (req, res) => {
+router.delete('/endpoints/:id', ensureNotGuest, async (req, res) => {
   try {
     // Verify project ownership before deleting endpoint
     const endpoint = await Endpoint.findById(req.params.id);
@@ -360,7 +360,7 @@ router.delete('/endpoints/:id', ensureAuthenticated, async (req, res) => {
 
 // @desc    Export project endpoints in specified format (openapi, proto, graphql)
 // @route   GET /api/projects/:id/export
-router.get('/:id/export', ensureAuthenticated, async (req, res) => {
+router.get('/:id/export', ensureNotGuest, async (req, res) => {
   try {
     const { format } = req.query;
     const project = await Project.findOne({ _id: req.params.id, owner: req.user._id });

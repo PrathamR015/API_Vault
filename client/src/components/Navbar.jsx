@@ -75,9 +75,12 @@ export default function Navbar() {
           </button>
           <button 
             onClick={() => navigate('/projects')} 
-            className={`hover:text-white px-3.5 py-2 rounded-xl transition-all select-none duration-150 active:scale-95 ${location.pathname.startsWith('/projects') ? 'text-blue-400 font-extrabold bg-zinc-900/60 border border-zinc-850 shadow-inner' : 'text-zinc-500 hover:bg-zinc-900/30 border border-transparent'}`}
+            className={`hover:text-white px-3.5 py-2 rounded-xl transition-all select-none duration-150 active:scale-95 flex items-center gap-1.5 ${location.pathname.startsWith('/projects') ? 'text-blue-400 font-extrabold bg-zinc-900/60 border border-zinc-850 shadow-inner' : 'text-zinc-500 hover:bg-zinc-900/30 border border-transparent'}`}
           >
-            API Studio
+            <span>API Studio</span>
+            {(user?.isGuest || user?.username === 'dev-guest' || !user) && (
+              <span className="text-[8px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.5 rounded font-extrabold uppercase tracking-wide">Locked</span>
+            )}
           </button>
           <button 
             onClick={() => navigate('/know-more')} 
@@ -117,7 +120,9 @@ export default function Navbar() {
               className="flex items-center gap-3 p-2 rounded-xl bg-slate-900/40 hover:bg-slate-900 border border-slate-800 hover:border-slate-700/80 transition-all duration-200 active:scale-98"
             >
               <img src={user.avatarUrl} alt="Avatar" className="w-8 h-8 rounded-lg border border-slate-800 object-cover" />
-              <span className="text-xs font-bold text-slate-300 hidden sm:inline-block max-w-[100px] truncate">{user.username}</span>
+              <span className="text-xs font-bold text-slate-300 hidden sm:inline-block max-w-[100px] truncate">
+                {user.isGuest || user.username === 'dev-guest' ? 'Guest Developer' : user.username}
+              </span>
               <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
             
@@ -126,25 +131,44 @@ export default function Navbar() {
                 <div className="fixed inset-0 z-30" onClick={() => setDropdownOpen(false)} />
                 <div className="absolute right-0 mt-2.5 w-56 rounded-2xl bg-slate-950/95 border border-slate-800/80 backdrop-blur-xl p-2 shadow-2xl z-40 animate-in fade-in slide-in-from-top-2 duration-200">
                   <div className="px-3 py-2.5 border-b border-slate-800/50 mb-1">
-                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Session Authorized</p>
-                    <p className="text-sm font-bold text-slate-100 truncate">{user.username}</p>
+                    <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">
+                      {user.isGuest || user.username === 'dev-guest' ? 'Guest Mode' : 'Session Authorized'}
+                    </p>
+                    <p className="text-sm font-bold text-slate-100 truncate">
+                      {user.isGuest || user.username === 'dev-guest' ? 'Developer Guest' : user.username}
+                    </p>
                   </div>
-                  
-                  <a 
-                    href={`https://github.com/${user.username}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900 rounded-xl transition-all"
-                  >
-                    <Github className="w-3.5 h-3.5" />
-                    <span>GitHub Profile</span>
-                  </a>
+
+                  {!(user.isGuest || user.username === 'dev-guest') ? (
+                    <a 
+                      href={`https://github.com/${user.username}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-900 rounded-xl transition-all"
+                    >
+                      <Github className="w-3.5 h-3.5" />
+                      <span>GitHub Profile</span>
+                    </a>
+                  ) : (
+                    <button 
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        handleLogin();
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-blue-400 hover:bg-blue-600/10 rounded-xl transition-all"
+                    >
+                      <Github className="w-3.5 h-3.5" />
+                      <span>Sign in with GitHub</span>
+                    </button>
+                  )}
 
                   <div className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-400 rounded-xl">
                     <Shield className="w-3.5 h-3.5 text-emerald-500" />
                     <span className="flex items-center gap-1.5">
                       <span>Dev Portal</span>
-                      <span className="bg-emerald-500/10 text-emerald-400 text-[9px] font-bold px-1.5 py-0.5 rounded-full border border-emerald-500/20">Active</span>
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full border ${user.isGuest || user.username === 'dev-guest' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`}>
+                        {user.isGuest || user.username === 'dev-guest' ? 'Guest' : 'Active'}
+                      </span>
                     </span>
                   </div>
 
@@ -155,10 +179,15 @@ export default function Navbar() {
                       setDropdownOpen(false);
                       navigate('/projects');
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 rounded-xl transition-all text-left"
+                    className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-900 rounded-xl transition-all text-left"
                   >
-                    <FolderKanban className="w-3.5 h-3.5 text-blue-400" />
-                    <span>API Studio</span>
+                    <div className="flex items-center gap-2.5">
+                      <FolderKanban className="w-3.5 h-3.5 text-blue-400" />
+                      <span>API Studio</span>
+                    </div>
+                    {(user.isGuest || user.username === 'dev-guest') && (
+                      <span className="text-[8px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-1.5 py-0.5 rounded font-bold uppercase">Locked</span>
+                    )}
                   </button>
 
                   <button 

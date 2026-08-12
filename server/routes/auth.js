@@ -29,8 +29,12 @@ router.get('/mock-login', async (req, res) => {
         githubId: 'mock-dev-id',
         username: 'dev-guest',
         profileUrl: 'https://github.com',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/9919?v=4'
+        avatarUrl: 'https://avatars.githubusercontent.com/u/9919?v=4',
+        isGuest: true
       });
+    } else if (!user.isGuest) {
+      user.isGuest = true;
+      await user.save();
     }
     req.login(user, (err) => {
       if (err) {
@@ -47,7 +51,9 @@ router.get('/mock-login', async (req, res) => {
 // @route   GET /api/auth/me
 router.get('/me', (req, res) => {
   if (req.user) {
-    res.json(req.user);
+    const userObj = req.user.toObject ? req.user.toObject() : { ...req.user };
+    userObj.isGuest = Boolean(userObj.isGuest || userObj.username === 'dev-guest' || userObj.username === 'guest');
+    res.json(userObj);
   } else {
     res.status(401).json({ message: 'Not authenticated' });
   }

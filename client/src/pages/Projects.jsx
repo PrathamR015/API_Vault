@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FolderKanban, Plus, Trash2, Calendar, FileCode2, 
-  ExternalLink, Sparkles, AlertTriangle, ArrowRight, Loader2
+  ExternalLink, Sparkles, AlertTriangle, ArrowRight, Loader2, Lock, Github
 } from 'lucide-react';
 import { fetchProjects, createProject, deleteProject } from '../services/api';
 import useStore from '../store/useStore';
@@ -21,13 +21,59 @@ export default function Projects() {
   const [description, setDescription] = useState('');
   const [saving, setSaving] = useState(false);
 
+  const isGuest = user?.isGuest || user?.username === 'dev-guest';
+
   useEffect(() => {
     if (!user) {
       navigate('/login');
       return;
     }
-    loadProjects();
-  }, [user]);
+    if (!isGuest) {
+      loadProjects();
+    } else {
+      setLoading(false);
+    }
+  }, [user, isGuest]);
+
+  const handleLogin = () => {
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    window.location.href = `${API_URL}/api/auth/github`;
+  };
+
+  if (isGuest) {
+    return (
+      <div className="flex-grow w-full min-h-[calc(100vh-4rem)] bg-zinc-950 text-white p-6 md:p-12 flex items-center justify-center relative bg-fine-grid">
+        <div className="max-w-md w-full bg-zinc-950/80 border border-zinc-900 rounded-3xl p-8 backdrop-blur-xl text-center space-y-6 shadow-2xl">
+          <div className="w-16 h-16 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center mx-auto text-amber-400 shadow-inner">
+            <Lock className="w-7 h-7" />
+          </div>
+
+          <div className="space-y-2">
+            <h2 className="text-xl font-black text-white tracking-tight">GitHub Sign-in Required</h2>
+            <p className="text-zinc-400 text-xs leading-relaxed font-medium">
+              Guest Mode allows browsing APIs and AI Stack Curation. Sign in with GitHub to unlock <span className="text-white font-bold">API Studio</span>, create projects, and design endpoint schemas.
+            </p>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <button
+              onClick={handleLogin}
+              className="w-full flex items-center justify-center gap-2.5 px-5 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg transition-all active:scale-[0.98] select-none text-xs"
+            >
+              <Github className="w-4 h-4" />
+              <span>Sign in with GitHub</span>
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="w-full px-5 py-3 bg-zinc-900 hover:bg-zinc-850 text-zinc-400 hover:text-white font-bold rounded-xl border border-zinc-800 transition-all select-none text-xs"
+            >
+              Return to API Vault
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const loadProjects = async () => {
     try {
